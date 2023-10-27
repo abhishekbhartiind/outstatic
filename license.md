@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2022 Vercel, Inc.
+Copyright (c) 2022 Outstatic - André Vitorio (Outstatic.com / AndreVitorio.com).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
