@@ -1,12 +1,12 @@
-import { EnvVarsType, envVars } from '../utils/envVarsCheck'
-import { getLoginSession } from '../utils/auth/auth'
-import { initializeApollo } from '../utils/apollo'
 import {
   CollectionsDocument,
   CollectionsQuery,
   CollectionsQueryVariables
 } from '../graphql/generated'
 import { Session } from '../types'
+import { initializeApollo } from '../utils/apollo'
+import { getLoginSession } from '../utils/auth/auth'
+import { EnvVarsType, envVars } from '../utils/envVarsCheck'
 
 export type OutstaticData = {
   repoOwner: string
@@ -19,6 +19,7 @@ export type OutstaticData = {
   collections: string[]
   pages: string[]
   missingEnvVars: EnvVarsType | false
+  dataSource: 'github'
 }
 
 export const defaultPages = ['settings', 'collections']
@@ -79,6 +80,7 @@ export async function Outstatic() {
     initialApolloState: null,
     collections,
     pages: [...defaultPages, ...collections],
-    missingEnvVars: false
+    missingEnvVars: false,
+    dataSource: 'github'
   } as OutstaticData
 }

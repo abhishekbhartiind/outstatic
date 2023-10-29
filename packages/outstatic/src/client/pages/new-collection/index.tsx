@@ -9,60 +9,41 @@ import * as yup from 'yup'
 import { AdminLayout, Input } from '../../../components'
 import Alert from '../../../components/Alert'
 import { OutstaticContext } from '../../../context'
-import { useCreateCommitMutation } from '../../../graphql/generated'
-import { Collection } from '../../../types'
-import { collectionCommitInput } from '../../../utils/collectionCommitInput'
+import { CollectionType } from '../../../types'
+import { useCreateCollection } from '../../../utils/data/useCreateCollection'
 import useNavigationLock from '../../../utils/hooks/useNavigationLock'
-import useOid from '../../../utils/hooks/useOid'
 
 export default function NewCollection() {
-  const {
-    pages,
-    contentPath,
-    monorepoPath,
-    session,
-    repoSlug,
-    repoBranch,
-    repoOwner,
-    addPage
-  } = useContext(OutstaticContext)
+  const createCollection = useCreateCollection()
+  const { pages, addPage } = useContext(OutstaticContext)
   const router = useRouter()
-  const [createCommit] = useCreateCommitMutation()
-  const fetchOid = useOid()
   const [hasChanges, setHasChanges] = useState(false)
   const [collectionName, setCollectionName] = useState('')
   const pagesRegex = new RegExp(`^(?!${pages.join('$|')}$)`, 'i')
-  const createCollection: yup.SchemaOf<Collection> = yup.object().shape({
-    name: yup
-      .string()
-      .matches(pagesRegex, `${collectionName} is already taken.`)
-      .required('Collection name is required.')
-  })
+  const createCollectionSchema: yup.SchemaOf<CollectionType> = yup
+    .object()
+    .shape({
+      name: yup
+        .string()
+        .matches(pagesRegex, `${collectionName} is already taken.`)
+        .required('Collection name is required.')
+    })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  const methods = useForm<Collection>({
-    resolver: yupResolver(createCollection)
+  const methods = useForm<CollectionType>({
+    resolver: yupResolver(createCollectionSchema)
   })
 
-  const onSubmit: SubmitHandler<Collection> = async ({ name }: Collection) => {
+  const onSubmit: SubmitHandler<CollectionType> = async ({
+    name
+  }: CollectionType) => {
     setLoading(true)
     setHasChanges(false)
 
     try {
-      const oid = await fetchOid()
-      const owner = repoOwner || session?.user?.login || ''
       const collection = slugify(name)
-      const commitInput = collectionCommitInput({
-        owner,
-        oid,
-        repoSlug,
-        repoBranch,
-        contentPath,
-        monorepoPath,
-        collection
-      })
+      const created = await createCollection(collection)
 
-      const created = await createCommit({ variables: commitInput })
       if (created) {
         addPage(collection)
         setLoading(false)

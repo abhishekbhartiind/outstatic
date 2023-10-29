@@ -14,6 +14,7 @@ type OutstaticProviderProps = {
   pages: string[]
   addPage: (page: string) => void
   removePage: (page: string) => void
+  dataSource: 'github'
 }
 
 export const OutstaticContext = createContext({
@@ -36,7 +37,8 @@ export const OutstaticProvider = ({
   collections,
   pages,
   addPage,
-  removePage
+  removePage,
+  dataSource
 }: OutstaticProviderProps) => {
   return (
     <OutstaticContext.Provider
@@ -50,7 +52,8 @@ export const OutstaticProvider = ({
         collections,
         pages,
         addPage,
-        removePage
+        removePage,
+        dataSource
       }}
     >
       {children}

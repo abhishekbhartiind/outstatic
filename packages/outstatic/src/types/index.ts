@@ -1,5 +1,4 @@
 import { Editor } from '@tiptap/react'
-import { Dispatch, SetStateAction } from 'react'
 
 export type Document = {
   author: {
@@ -41,7 +40,7 @@ export type Session = {
   expires: Date
 }
 
-export type Collection = {
+export type CollectionType = {
   name: string
 }
 
